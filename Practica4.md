@@ -234,3 +234,116 @@ nano /etc/make.conf
 
 PORTSDIR=/usr/ports
 
+Ahora vamos con los Linux
+
+Primero Devuan
+
+comprobamos los repos, y metemos si faltan
+cat /etc/apt/sources.list
+
+apt update
+
+Instalamos slim y lightdm
+
+sudo apt install slim lightdm -y
+
+probamos uno
+
+dpkg-reconfigure slim
+dpkg-reconfigure lightdm
+
+(realmente da igual la opción, luego te saca un menu y eliges)
+
+Y activamos uno
+
+systemctl enable slim
+systemctl enable lightdm
+
+Ahora las guest additions
+
+Primero las dependencias
+
+sudo apt install build-essential dkms linux-headers-$(uname -r) -y
+
+Ahora insertamos el disco, lo montamos y ejecutamos "VBoxLinuxAddition.run
+
+Ahora instalamos strace
+
+sudo apt install strace -y
+
+Rebooteamos
+
+Vamos con Fedora
+
+Comprobamos los repositorios
+
+sudo dnf repolist
+
+Si hace falta añadimos
+
+sudo dnf config-manager --set-enabled fedora
+sudo dnf config-manager --set-enabled updates
+
+Y actualizamos 
+
+sudo dnf update -y
+
+(yo no actualicé)
+
+Instalamos los login gráficos
+
+sudo dnf install slim lightdm -y
+
+Y ponemos uno por defecto
+
+sudo systemctl enable lightdm
+sudo systemctl set-default graphical.target
+
+Ahora las guest addition
+
+Primero las dependencias
+
+sudo dnf install @development-tools dkms kernel-devel kernel-headers -y
+
+Ahora insertamos el disco, lo montamos y ejecutamos "VBoxLinuxAddition.run
+
+Ahora instalamos strace
+
+sudo dnf install strace -y
+
+Y por último ubuntu server
+
+Comprobamos los repositorios
+
+cat /etc/apt/sources.list
+
+Y si hace falta añadimos
+
+sudo apt update
+
+Instalamos mate y los login gráficos
+
+sudo apt install mate-desktop-environment slim lightdm -y
+
+Elegimos uno
+sudo dpkg-reconfigure slim
+sudo dpkg-reconfigure lightdm
+
+Y activamos uno
+sudo systemctl enable slim
+sudo systemctl enable lightdm
+
+sudo systemctl set-default graphical.target
+
+Ahora vamos a instalar las guest additions
+
+Primero las dependencias
+
+sudo apt install build-essential dkms linux-headers-$(uname -r) -y
+
+Ahora insertamos el disco, lo montamos y ejecutamos "VBoxLinuxAddition.run
+
+Ahora instalamos strace
+
+sudo apt install strace -y
+
