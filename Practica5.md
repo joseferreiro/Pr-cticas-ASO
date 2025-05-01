@@ -1,36 +1,36 @@
 # Guía para la Práctica 5
 
-## 1. Setting up FreeBSD Jail (jaulilla)
+## 1. Configuración de FreeBSD Jail (jaulilla)
 
-### Step 1: Mount the FreeBSD CD
+### Paso 1: Montar el CD de FreeBSD
 
-If the CD is not already mounted, use the following command:
+Si el CD aún no está montado, usa el siguiente comando:
 
 ```bash
 mount -t cd9660 /dev/cd0 /media/12_0_RELEASE_AMD64_CD
 ```
 
-### Step 2: Create the Jail Directory
+### Paso 2: Crear el Directorio de la Jail
 
 ```bash
 mkdir -p /usr/jail/jaulilla
 ```
 
-### Step 3: Extract Base System and Ports
+### Paso 3: Extraer el Sistema Base y los Ports
 
-Assuming the installation media is mounted on `/media/12_0_RELEASE_AMD64_CD`:
+Asumiendo que el medio de instalación está montado en `/media/12_0_RELEASE_AMD64_CD`:
 
 ```bash
 cd /usr/jail/jaulilla
-# Extract FreeBSD base system
+# Extraer el sistema base de FreeBSD
 tar xvJf /media/12_0_RELEASE_AMD64_CD/usr/freebsd-dist/base.txz
-# Optional: Extract ports collection
+# Opcional: Extraer la colección de ports
 tar xvJf /media/12_0_RELEASE_AMD64_CD/usr/freebsd-dist/ports.txz
 ```
 
-### Step 4: Configure the Jail in /etc/jail.conf
+### Paso 4: Configurar la Jail en `/etc/jail.conf`
 
-```
+```conf
 jaulilla {
     path = /usr/jail/jaulilla;
     mount.devfs;
@@ -42,42 +42,44 @@ jaulilla {
 }
 ```
 
-### Step 5: Create Users and Set Root Password
+### Paso 5: Crear Usuarios y Establecer Contraseña de Root
 
 ```bash
 jail -c jaulilla
-# Inside the jail
+# Dentro de la jail
 pw useradd elbueno -m -s /bin/sh
 pw useradd elfeo -m -s /bin/sh
 pw useradd elmalo -m -s /bin/sh
 passwd root
 ```
 
-### Step 6: Enable Jail at Boot
+### Paso 6: Habilitar la Jail al Iniciar
 
-In `/etc/rc.conf`:
+En `/etc/rc.conf`:
 
 ```bash
 jail_enable="YES"
 ```
 
-### Step 7: Verify Ownership of User Files
+### Paso 7: Verificar la Propiedad de los Archivos de los Usuarios
 
-From the host:
+Desde el host:
 
 ```bash
 ls -l /usr/jail/jaulilla/home
 ```
 
-## 2. Setting up Solaris Zone (zonilla)
+---
 
-### Step 1: Create the Zone Storage
+## 2. Configuración de Zona Solaris (zonilla)
+
+### Paso 1: Crear el Almacenamiento de la Zona
 
 ```bash
 zfs create rpool/ZONILLA
 ```
 
-### Step 2: Configure the Zone
+### Paso 2: Configurar la Zona
 
 ```bash
 zonecfg -z zonilla
@@ -90,13 +92,13 @@ commit
 exit
 ```
 
-### Step 3: Install the Zone
+### Paso 3: Instalar la Zona
 
 ```bash
 zoneadm -z zonilla install
 ```
 
-### Step 4: Create Users and Set Root Password
+### Paso 4: Crear Usuarios y Establecer Contraseña de Root
 
 ```bash
 zlogin zonilla
@@ -106,43 +108,45 @@ useradd -m -s /bin/bash elmalo
 passwd root
 ```
 
-### Step 5: Enable Zone at Boot
+### Paso 5: Habilitar Zona al Iniciar
 
 ```bash
 svcadm enable zones
 ```
 
-### Step 6: Verify Ownership of User Files
+### Paso 6: Verificar la Propiedad de los Archivos de los Usuarios
 
-From the host:
+Desde el host:
 
 ```bash
 ls -l /rpool/ZONILLA/root/home
 ```
 
-## 3. Setting up Ubuntu LXC Container (containillo)
+---
 
-### Step 1: Install LXC Packages
+## 3. Configuración del Contenedor LXC en Ubuntu (containillo)
+
+### Paso 1: Instalar Paquetes LXC
 
 ```bash
 apt update && apt install lxc
 ```
 
-### Step 2: Create the Container
+### Paso 2: Crear el Contenedor
 
 ```bash
 lxc-create -t ubuntu -n containillo
 ```
 
-### Step 3: Configure Container Startup
+### Paso 3: Configurar el Inicio del Contenedor
 
-In `/var/lib/lxc/containillo/config`:
+En `/var/lib/lxc/containillo/config`:
 
 ```bash
 lxc.start.auto = 1
 ```
 
-### Step 4: Create Users and Set Root Password
+### Paso 4: Crear Usuarios y Establecer Contraseña de Root
 
 ```bash
 lxc-attach -n containillo
@@ -152,9 +156,9 @@ useradd -m -s /bin/bash elmalo
 passwd root
 ```
 
-### Step 5: Verify Ownership of User Files
+### Paso 5: Verificar la Propiedad de los Archivos de los Usuarios
 
-From the host:
+Desde el host:
 
 ```bash
 ls -l /var/lib/lxc/containillo/rootfs/home
@@ -162,71 +166,89 @@ ls -l /var/lib/lxc/containillo/rootfs/home
 
 ---
 
-Más cosas
+## 4. Acceder a las Entidades Virtuales
 
-Como iniciar sesión con uno de los usuarios
+### En FreeBSD
 
-En FreeBSD
+Listar las jails:
 
-Listamos las jails
-
+```bash
 jls
+```
 
-Y nos metemos a una como root
+Entrar como root:
 
-Con el ID
-
+```bash
 jexec 1 /bin/sh
-
-O con el nombre
-
+# o
 jexec jaulilla /bin/sh
+```
 
-Y cambiamos enter usuarios
+Cambiar de usuario:
 
+```bash
 su - elbueno
+```
 
-Otra opción es usar el comando jail
+También se puede usar directamente:
 
+```bash
 jail -c jaulilla
-
-Y cambiamos enter usuarios
-
 su - elbueno
+```
 
-También podemos acceder con un user específico
+O acceder directamente como un usuario específico:
 
+```bash
 jexec -U elbueno jaulilla /bin/sh
+```
 
-En Solaris cuando una zona está "installed", pero no "running"
+---
 
-Listamos las zonas
+### En Solaris
 
+Ver el estado de las zonas:
+
+```bash
 zoneadm list -cv
+```
 
-Booteamos la zona
+Si la zona está "installed", pero no "running", arrancarla:
 
+```bash
 zoneadm -z zonilla boot
+```
 
-Comprobamos que está "running"
+Verificar que esté corriendo:
 
+```bash
 zoneadm list -cv
+```
 
-Y nos podemos logear
+Acceder:
 
+```bash
 zlogin zonilla
+```
 
-En ubuntu
+---
 
-Comprobamos el estado del container
+### En Ubuntu
 
+Verificar estado del contenedor:
+
+```bash
 lxc-info -n containillo
+```
 
-Lo podemos arrancar
+Arrancar el contenedor:
 
+```bash
 lxc-start -n containillo
+```
 
-O descongelar
+O descongelarlo si está en pausa:
 
+```bash
 lxc-unfreeze -n containillo
-
+```
