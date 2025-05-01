@@ -1,5 +1,5 @@
 
-# Guía de Instalación de Entornos Gráficos y Guest Additions en Distintas Distribuciones
+# Guía de la práctica 4
 
 ---
 
