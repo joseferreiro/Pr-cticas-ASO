@@ -166,7 +166,7 @@ ls -l /var/lib/lxc/containillo/rootfs/home
 
 ---
 
-## 4. Acceder a las Entidades Virtuales
+## 4. Notas
 
 ### En FreeBSD
 
