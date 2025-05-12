@@ -7,7 +7,13 @@
 En `/etc/login.conf`:
 
 ```
-chunga:    :login-backoff=1:    :filesize=1M:    :minpasswordlen=13:    :priority=20:    :maxproc=20:    :tc=default:
+chunga:\
+    :login-backoff=1:\
+    :filesize=1M:\
+    :minpasswordlen=13:\
+    :priority=20:\
+    :maxproc=20:\
+    :tc=default:
 ```
 
 Para aplicar los cambios:
