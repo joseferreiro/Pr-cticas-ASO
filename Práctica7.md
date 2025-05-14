@@ -26,14 +26,14 @@ ifup eth1
 ### OpenBSD (tarjeta Intel):
 
 ```bash
-echo "inet 192.168.1.102 255.255.255.0" | sudo tee /etc/hostname.em1
+echo "inet 192.168.1.101 255.255.255.0" | sudo tee /etc/hostname.em1
 ```
 
 ### Solaris:
 
 ```bash
 sudo ipadm create-ip net1
-sudo ipadm create-addr -T static -a 192.168.1.103/24 net1/v4
+sudo ipadm create-addr -T static -a 192.168.1.101/24 net1/v4
 ```
 
 Para que sea permanente:
@@ -56,14 +56,15 @@ echo "inet 192.168.1.102 netmask 255.255.255.0" | sudo tee /etc/ifconfig.pcn1
 
 ### Ubuntu Server:
 
-Creamos `/etc/netplan/50-cloud-init.yaml` con este contenido:
+Creamos `/etc/netplan/01-netcfg.yaml` con este contenido:
 
 ```yaml
 network:
   version: 2
   ethernets:
-    enp0s3:
-      dhcp4: true
+    enp0s8:
+      dhcp4: no
+      addresses: [192.168.1.103/24]
 ```
 
 ### FreeBSD (tarjeta Intel):
@@ -71,7 +72,7 @@ network:
 Añadimos `ifconfig_em1="inet 192.168.1.103 netmask 255.255.255.0"` a `/etc/rc.conf`:
 
 ```bash
-sudo sysrc ifconfig_em1="inet 192.168.1.101 netmask 255.255.255.0"
+sudo sysrc ifconfig_em1="inet 192.168.1.103 netmask 255.255.255.0"
 ```
 
 Y reiniciamos el servicio:
