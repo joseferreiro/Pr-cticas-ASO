@@ -1,6 +1,8 @@
 # Explicación practica 01
 
 ---
+## Configuración del archivo de grub
+
 Para hacer esta practica despues de instalar los sistemas operativos, tenemos que acceder a devuan y modificar el archivo
 `/etc/grub.d/40_custom, añadiendo los menuentry necesarios.
 
