@@ -1,6 +1,152 @@
 # Guía para la Práctica 8
 
-<!-- añade lo tuyo por aquí Iago -->
+## 2.
+
+#En Devuan y Ubuntu Server)
+
+En `/etc/pam.d/login`, `/etc/pam.d/sshd`, `/etc/pam.d/slim` y `/etc/pam.d/lightdm`:
+
+```
+auth required pam_succeed_if.so user != root
+```
+
+#En Fedora
+
+En `/etc/pam.d/system-auth`, `/etc/pam.d/sshd` y `/etc/pam.d/lightdm` o `/etc/pam.d/lightdm-greeter`:
+
+```
+auth required pam_succeed_if.so user != root
+```
+
+#En los BSD
+
+*Hacemos la chapuza de Yañez de exit en `~/.xession` o `~/xinitrc`*
+
+#En Solaris
+
+En `/etc/pam.conf`:
+
+```
+login   auth required     pam_succeed_if.so user != root
+```
+
+## 3-a.
+
+En devuan metemos a los usuarios a un grupo para permitir hacerse root sin login al grupo
+
+```
+usermod -aG wheel user222
+usermod -aG wheel user333
+usermod -aG wheel user444
+usermod -aG wheel usuario
+```
+
+En `/etc/pam.d/su`:
+```
+auth       required   pam_wheel.so group=suaccess
+```
+
+En Fedora los metemos al grupo wheel y permitimos hacerse root sin login a wheel
+
+```
+usermod -aG wheel user222
+usermod -aG wheel user333
+usermod -aG wheel user444
+usermod -aG wheel usuario
+```
+
+En `/etc/pam.d/su`:
+
+```
+auth required pam_wheel.so use_uid
+```
+
+En FreeBSD metemos a los usuario al grupo wheel
+
+```
+pw groupmod wheel -m user222,user333,user444
+```
+
+Y cambiamos esta linea en `/etc/pam.d/su`:
+```
+auth requisite pam_group.so no_warn group=wheel root_only fail_safe ruser
+```
+
+Por
+
+```
+auth sufficient pam_group.so trust group=wheel
+```
+
+En NetBSD metemos a los usuarios al grupo wheel
+
+```
+usermod -G wheel user222
+usermod -G wheel user333
+usermod -G wheel user444
+```
+
+Y editamos `/etc/pam.d/su`:
+
+```
+auth required pam_wheel.so trust
+```
+
+## 3-b.
+
+Añadimos a los usuarios al grupo de sudoers:
+
+```
+usermod -aG sudo user222
+usermod -aG sudo user333
+usermod -aG sudo user444
+```
+
+## 3-c.
+
+Editamos `/etc/user_attr` añadiendo al final:
+
+```
+user222::::roles=root
+user333::::roles=root
+user444::::roles=root
+```
+*Tenemos la línea que nos muestra que hay un rol de root `root::::type=role`*
+
+
+
+## 4.
+
+En los sistemas Linux (Devuan, Fedora y Ubuntu Server) (YYYY-MM-DD)
+
+```
+chage -E "$EXPIRATION_DATE" "$user"
+```
+
+En FreeBSD (formato de fecha DD-MM-YYYY)
+
+```
+pw usermod "$user" -e "$EXPIRATION_DATE"
+```
+
+En NetBSD
+
+```
+usermod -e "May 5 2025" user100
+```
+
+En OpenBSD (YYYY-MM-DD)
+
+```
+usermod -e 05-05-2025 user100
+```
+
+En Solaris (no deja fechas pasadas, al menos de este modo)
+
+```
+usermod -e "$EXPIRATION_DATE" "$user"
+```
+
 
 ## 5-a.
 
